@@ -7,14 +7,15 @@ let scale = (clientWidth <= clientHeight) ? clientWidth * 0.9 : clientHeight * 0
 let canvas = document.getElementById("canvas");
 canvas.width  = scale; 
 canvas.height = scale;
+let center = scale / 2;
 
 let context = canvas.getContext('2d');
 
 let table = {
-	radius: scale / 2 * 0.9,
+	radius: center * 0.9,
 	draw: function(context) {
 		context.fillStyle = '#888'; 
-		context.arc(scale / 2, scale / 2, this.radius, 0, 2 * Math.PI, true);		
+		context.arc(center, center, this.radius, 0, 2 * Math.PI, true);		
 	}
 }
 
@@ -28,17 +29,24 @@ let coin = {
 
 drowTable(context);
 
-canvas.addEventListener("mouseover", e => {
+canvas.addEventListener("click", e => {
 	let x = e.offsetX;
-	let y = e.offsetY;	    
-    drowShade(context, x, y);
+	let y = e.offsetY;
+
+	if (Math.sqrt(Math.pow(center - y, 2) + Math.pow(center - x, 2)) 
+		<= table.radius - coin.radius) {
+		drowShade(context, x, y);
+	} 
 });
 
-canvas.addEventListener("click", e => {
-	console.log(e.offsetX + ", " + e.offsetY);
+canvas.addEventListener("dblclick", e => {
 	let x = e.offsetX;
-	let y = e.offsetY;	    
-    drowCoin(context, x, y);
+	let y = e.offsetY;	
+
+    if (Math.sqrt(Math.pow(center - y, 2) + Math.pow(center - x, 2)) 
+		<= table.radius - coin.radius) {
+		drowCoin(context, x, y);
+	}
 });
 
 function drowTable(context) {	
